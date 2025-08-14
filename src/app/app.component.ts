@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
-import { interval, map } from 'rxjs';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +9,19 @@ import { interval, map } from 'rxjs';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit    {
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   clickCount = signal(0);
   clickCount$ = toObservable(this.clickCount);
+
+  // Using RxJS interval to create a stream that emits values every second
+  interval$ = interval(1000);
+  // Converting the interval observable to a signal
+  // This will allow us to use it in the template or other parts of the component
+  // Note: This is just an example; you can use the interval$ observable directly if you prefer
+  // The signal will update whenever the interval emits a new value
+  intervalSignal = toSignal(this.interval$, { initialValue: 0 });
+
 
   constructor() {
     // You can initialize other properties or services here if needed
